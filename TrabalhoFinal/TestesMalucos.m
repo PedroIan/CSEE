@@ -29,11 +29,12 @@ syms u;
  f3 = thetaP;
  f4 = ml*(g*theta-(u+b*xP)/Mm)/(constanteA + m2l2/Mm);
 
-Aaux = [ f1; f2; f3; f4 ]
+Aaux = [ f1; f2; f3; f4 ];
 
-Jaux = jacobian(Aaux, [theta, thetaP, xP, x2P])
+Jaux = jacobian(Aaux, [theta, thetaP, xP, x2P]);
 
 B = [ diff(f1, u); diff(f2, u);diff(f3, u); diff(f4, u) ]; 
+C = [ 1 0 0 0; 0 0 1 0 ]
 
 rank(Jaux)
 
