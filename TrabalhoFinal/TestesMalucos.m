@@ -15,7 +15,7 @@ syms u;
  b = 0.005;
  g = 9.8;
  
- %%funções A
+ %%funï¿½ï¿½es A
  f1 = thetaP;
  f2 = (m*g*l*theta - m*l*((u - b*xP)/(M+m)))/(I+m*l^2);
  f3 = xP;
