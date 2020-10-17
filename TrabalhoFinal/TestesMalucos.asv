@@ -27,9 +27,9 @@ syms u;
  f1 = xP;
  f2 = ((u - b*xP)/Mm - (m2l2*g*theta)/(Mm*constanteA))/(1-(m2l2)/(Mm*constanteA));
  f3 = thetaP;
- f4 = ml*(g*theta-(u+b*xP)/Mm)/(constanteA + m2l2/Mm);
+ f4 = ml*(g*theta-(b*xP)/Mm)/(constanteA + m2l2/Mm);
 
-Aaux = [ f1; f2; f3; f4 ]
+Aaux = [ f1; f2; f2; f4 ]
 
 Jaux = jacobian(Aaux, [theta, thetaP, xP, x2P])
 
@@ -39,7 +39,7 @@ rank(Jaux)
 
 Ctrb = ctrb(Jaux, B);
 
-PcInv = [ 0 0 0 1; 0.0952 0 1 0; 0 1 0 0; -0.0278 0 0 0 ];
+PcInv = [ 0 0 0 1; -0.0313 1 0 0; 0 0 1 0; 0.0833 0 0 0 ];
 rank(PcInv)
 Pc = inv(PcInv);
 
