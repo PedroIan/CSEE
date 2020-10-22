@@ -57,4 +57,4 @@ F = [ 0 1 0 0; 0 0 1 0; 0 0 0 1; -1296 -864 -216 -24];
 Lhat = [ 1 0; 0 1; 0 0; 0 0];
 rank(ctrb(F,Lhat))
 T = lyap(-double(F), double(Jaux), -double(Lhat * C));
-L = inv(T)*Lhat
+L = inv(T)*Lhat;
