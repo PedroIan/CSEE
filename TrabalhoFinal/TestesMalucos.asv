@@ -41,6 +41,8 @@ D = [ 0; 0];
 Ctrb = ctrb(Jaux, B);
 Obsv = obsv(Jaux, C);
 
+lyap(
+
 rank(Ctrb);
 rank(Obsv);
 
@@ -54,7 +56,6 @@ espacoDeEstados = ss(double(Jaux),double(B),double(C),double(D),'statename',esta
 H = tf(espacoDeEstados);
 
 F = [ 0 1 0 0; 0 0 1 0; 0 0 0 1; -1296 -864 -216 -24];
-Lhat = [ 1 0; 0 1; 0 0; 0 0];
-rank(ctrb(F,Lhat))
-T = lyap(-double(F), double(Jaux), -double(Lhat * C));
-L = inv(T)*Lhat
+Lhat = [ 1; 0; 0; 0];
+
+ctrb(
