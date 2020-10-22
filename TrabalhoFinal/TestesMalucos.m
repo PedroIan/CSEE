@@ -13,14 +13,14 @@ syms u;
 %%variaveis do processo
  m = 2;
  M = 10;
- l = 2;
- I = (m*l^2)/3;
+ ell = 2;
+ I = (m*ell^2)/3;
  b = 0.005;
  g = 9.8;
 
- constanteA = I + m*l^2; 
- ml = m * l; %4
- m2l2 = m^2*l^2; %16
+ constanteA = I + m*ell^2; 
+ ml = m * ell; %4
+ m2l2 = m^2*ell^2; %16
  Mm = m + M; %12
  
  %%fun��es A
@@ -31,19 +31,30 @@ syms u;
 
 Aaux = [ f1; f2; f3; f4 ];
 
-Jaux = jacobian(Aaux, [theta, thetaP, xP, x2P]);
+Jaux = jacobian(Aaux, [x, xP, theta, thetaP ]);
 
 B = [ diff(f1, u); diff(f2, u);diff(f3, u); diff(f4, u) ]; 
-C = [ 1 0 0 0; 0 0 1 0 ]
-
-rank(Jaux)
+C = [ 1 0 0 0; 0 0 1 0 ];
+rank(C)
+D = [ 0; 0];
 
 Ctrb = ctrb(Jaux, B);
+Obsv = obsv(Jaux, C);
 
-PcInv = [ 0 0 0 1; 0.0952 0 1 0; 0 1 0 0; -0.0278 0 0 0 ];
-rank(PcInv)
-Pc = inv(PcInv);
+lyap(
 
-Ahat = Pc * Jaux * PcInv;
-Bhat = Pc * B;
-rank(ctrb(Ahat, Bhat))
+rank(Ctrb);
+rank(Obsv);
+
+
+estados = {'x' 'xP' 'theta' 'thetaP'};
+entradas = {'u'};
+saidas = {'x'; 'theta'};
+
+espacoDeEstados = ss(double(Jaux),double(B),double(C),double(D),'statename',estados,'inputname',entradas,'outputname',saidas);
+
+H = tf(espacoDeEstados)
+step(H)
+bode(H)
+
+F = [ 0 1 0 0; 0 0 1 0; 0 0 0 1; -1296 -864 -216 -24];
