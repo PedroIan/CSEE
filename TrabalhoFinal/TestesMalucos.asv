@@ -35,27 +35,20 @@ Jaux = jacobian(Aaux, [x, xP, theta, thetaP ]);
 
 B = [ diff(f1, u); diff(f2, u);diff(f3, u); diff(f4, u) ]; 
 C = [ 1 0 0 0; 0 0 1 0 ];
-rank(C)
 D = [ 0; 0];
 
 Ctrb = ctrb(Jaux, B);
 Obsv = obsv(Jaux, C);
 
-rank(Ctrb);
-rank(Obsv);
-
-
 estados = {'x' 'xP' 'theta' 'thetaP'};
 entradas = {'u'};
 saidas = {'x'; 'theta'};
-
 espacoDeEstados = ss(double(Jaux),double(B),double(C),double(D),'statename',estados,'inputname',entradas,'outputname',saidas);
 
 H = tf(espacoDeEstados);
 
 F = [ 0 1 0 0; 0 0 1 0; 0 0 0 1; -1296 -864 -216 -24];
 Lhat = [ 1 0; 0 1; 0 0; 0 0];
-rank(ctrb(F,Lhat))
 T = lyap(-double(F), double(Jaux), -double(Lhat * C));
 L = inv(T)*Lhat;
 
@@ -63,10 +56,18 @@ R = [0 0 0 1; 0 1 0 0];
 X = [C;R];
 Y = inv(X);
 
+Y1 = Y(:,1:2);
+Y2 = Y(:,3:4);
+
 Ab = (X*Jaux)/X;
 Bb = X*B;
 Cb = C/X;
 Db = D;
+
+T = lyap(-double(F), double(Ab), -double(Lhat * Cb));
+L = inv(T)*Lhat;
+
+Lb = L(3:4, :);  %definir
 
 % Capturando as submatrizes de interesse para o pendulo invertido analisado
 A11 = Ab(1:2,1:2);
