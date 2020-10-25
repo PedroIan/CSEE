@@ -1,4 +1,4 @@
-@@ -0,0 +1,87 @@
+
 close all;
 clear all;
 
@@ -24,12 +24,13 @@ syms u;
  m2l2 = m^2*ell^2; %16
  Mm = m + M; %12
  
- %%fun��es A
+ %%funcoes A
  f1 = xP;
  f2 = ((u - b*xP)/Mm - (m2l2*g*theta)/(Mm*constanteA))/(1-(m2l2)/(Mm*constanteA));
  f3 = thetaP;
  f4 = ml*(g*theta-(u+b*xP)/Mm)/(constanteA + m2l2/Mm);
 
+ %%linearizacao
 Aaux = [ f1; f2; f3; f4 ];
 
 Jaux = jacobian(Aaux, [x, xP, theta, thetaP ]);
@@ -41,6 +42,7 @@ D = [ 0; 0];
 Ctrb = ctrb(Jaux, B);
 Obsv = obsv(Jaux, C);
 
+%% espaco de estados
 estados = {'x' 'xP' 'theta' 'thetaP'};
 entradas = {'u'};
 saidas = {'x'; 'theta'};
@@ -53,6 +55,8 @@ Lhat = [ 1 0; 0 1; 0 0; 0 0];
 T = lyap(-double(F), double(Jaux), -double(Lhat * C));
 L = inv(T)*Lhat;
 
+
+%% codigo disponibilizado pelo professor
 R = [0 0 0 1; 0 1 0 0];
 X = [C;R];
 Y = inv(X);
@@ -65,7 +69,6 @@ Bb = X*double(B);
 Cb = double(C)/X;
 Db = double(D);
 
-% Capturando as submatrizes de interesse para o pendulo invertido analisado
 A11 = Ab(1:2,1:2);
 A12 = Ab(1:2,3:4);
 A21 = Ab(3:4,1:2);
@@ -75,14 +78,21 @@ B2 = Bb(3:4,:);
 C1 = Cb(:,1:2);
 C2 = Cb(:,3:4);
 
-novoLhat = [1 0; 0 0];
+espacoDeEstados2 = ss(Ab, Bb, Cb, Db);
 
-%T = lyap(-double(F), double(Ab), -double(novoLhat * C1));
-%L = inv(T)*novoLhat;
-Ab - Bb
+%% novo L
+T = lyap(-double(F), double(Ab), -double(Lhat * Cb));
+L = T\Lhat;
+Lb = L(1:2, :);
+
+%% metodo LQR
 P = care(Ab, Bb, Cb'*Cb, 1);
 KLqr = Bb'*P;
+Fs0 = Cb/inv(Bb*KLqr - Ab)*Bb;
 MLqr = KLqr'/(KLqr*KLqr');
 
-syms s;
-Cb/(s*eye(4)-(A-Bb*2))*Bb*3
+%% metodo de alocacao de polos
+polos = [2.6+i 2.6-i 10 -7];
+Kpolos = place(Ab, Bb, polos);
+Mpolos = place(Ab', Cb', polos).';
+regulator = reg(espacoDeEstados2, Kpolos, Mpolos);
