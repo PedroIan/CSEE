@@ -67,7 +67,7 @@ Db = D;
 T = lyap(-double(F), double(Ab), -double(Lhat * Cb));
 L = inv(T)*Lhat;
 
-Lb = L(3:4, :);  %definir
+Lb = L(3:4, 1:2);  %definir
 
 % Capturando as submatrizes de interesse para o pendulo invertido analisado
 A11 = Ab(1:2,1:2);
