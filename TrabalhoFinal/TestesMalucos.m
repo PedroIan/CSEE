@@ -29,9 +29,7 @@ syms u;
  f3 = thetaP;
  f4 = ml*(g*theta-(u+b*xP)/Mm)/(constanteA + m2l2/Mm);
 
-Aaux = [ f1; f2; f3; f4 ];
-
-Jaux = jacobian(Aaux, [x, xP, theta, thetaP ]);
+Jaux = jacobian([ f1; f2; f3; f4 ], [x, xP, theta, thetaP ]);
 
 B = [ diff(f1, u); diff(f2, u);diff(f3, u); diff(f4, u) ]; 
 C = [ 1 0 0 0; 0 0 1 0 ];
@@ -56,13 +54,14 @@ R = [0 0 0 1; 0 1 0 0];
 X = [C;R];
 Y = inv(X);
 
+
 Y1 = Y(:,1:2);
 Y2 = Y(:,3:4);
 
-Ab = (X*Jaux)/X;
-Bb = X*B;
-Cb = C/X;
-Db = D;
+Ab = (X*double(Jaux))/X;
+Bb = X*double(B);
+Cb = double(C)/X;
+Db = double(D);
 
 T = lyap(-double(F), double(Ab), -double(Lhat * Cb));
 L = inv(T)*Lhat;
@@ -76,5 +75,3 @@ A21 = Ab(3:4,1:2);
 A22 = Ab(3:4,3:4);
 B1 = Bb(1:2,:);
 B2 = Bb(3:4,:);
-
-A22-Lb*A12
