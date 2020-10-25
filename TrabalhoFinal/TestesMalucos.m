@@ -1,3 +1,4 @@
+@@ -0,0 +1,87 @@
 close all;
 clear all;
 
@@ -59,15 +60,10 @@ Y = inv(X);
 Y1 = Y(:,1:2);
 Y2 = Y(:,3:4);
 
-Ab = (X*Jaux)/X;
-Bb = X*B;
-Cb = C/X;
-Db = D;
-
-T = lyap(-double(F), double(Ab), -double(Lhat * Cb));
-L = inv(T)*Lhat;
-
-Lb = L(3:4, 1:2);  %definir
+Ab = (X*double(Jaux))/X;
+Bb = X*double(B);
+Cb = double(C)/X;
+Db = double(D);
 
 % Capturando as submatrizes de interesse para o pendulo invertido analisado
 A11 = Ab(1:2,1:2);
@@ -76,5 +72,17 @@ A21 = Ab(3:4,1:2);
 A22 = Ab(3:4,3:4);
 B1 = Bb(1:2,:);
 B2 = Bb(3:4,:);
+C1 = Cb(:,1:2);
+C2 = Cb(:,3:4);
 
-A22-Lb*A12
+novoLhat = [1 0; 0 0];
+
+T = lyap(-double(F), double(Ab), -double(novoLhat * C1));
+L = inv(T)*novoLhat;
+Ab - Bb
+P = care(Ab, Bb, Cb'*Cb, 1);
+KLqr = Bb'*P;
+MLqr = KLqr'/(KLqr*KLqr');
+
+syms s;
+Cb/(s*eye(4)-(A-Bb*2))*Bb*3
