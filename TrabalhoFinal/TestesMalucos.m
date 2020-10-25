@@ -77,8 +77,8 @@ C2 = Cb(:,3:4);
 
 novoLhat = [1 0; 0 0];
 
-T = lyap(-double(F), double(Ab), -double(novoLhat * C1));
-L = inv(T)*novoLhat;
+%T = lyap(-double(F), double(Ab), -double(novoLhat * C1));
+%L = inv(T)*novoLhat;
 Ab - Bb
 P = care(Ab, Bb, Cb'*Cb, 1);
 KLqr = Bb'*P;
